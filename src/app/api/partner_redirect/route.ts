@@ -35,8 +35,9 @@
 export async function GET(request: Request) {
     try {
         const text = await request.text()
-        // Process the webhook payload
-        localStorage.setItem("request", text)
+        // // Process the webhook payload
+        // sessionStorage.setItem("request", text)
+        console.log("text", text)
     } catch (error: any) {
         return new Response(`Webhook error: ${error.message}`, {
             status: 400,

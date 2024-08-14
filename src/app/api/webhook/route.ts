@@ -68,7 +68,8 @@ export async function POST(request: Request) {
     try {
         const text = await request.text()
         // Process the webhook payload
-        localStorage.setItem("request", text)
+        // sessionStorage.setItem("request", text)
+        console.log("text", text)
     } catch (error: any) {
         return new Response(`Webhook error: ${error.message}`, {
             status: 400,

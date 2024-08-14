@@ -2,6 +2,8 @@
 // import { NextRequest, NextResponse } from "next/server";
 // import { seedDatabase } from "@/actions/dev-only/seed-database";
 
+import { NextRequest } from "next/server"
+
 // export async function GET(request: NextRequest) {
 //   if (process.env.NODE_ENV !== "development") {
 //     // dev-only route
@@ -32,12 +34,13 @@
 //   return NextResponse.json(seedDatabaseResponse, { status: 200 });
 // }
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
     try {
         const text = await request.text()
         // // Process the webhook payload
         // sessionStorage.setItem("request", text)
-        console.log("text", text)
+        // https://partner-demo.vercel.app/api/partner_redirect?client=xxxxCL&channels=%5ByyyyCH%5D&revoked=%5BzzzzCH%5D&state=someStatePassedThrough
+        console.log("text", text, request.nextUrl.searchParams)
     } catch (error: any) {
         return new Response(`Webhook error: ${error.message}`, {
             status: 400,

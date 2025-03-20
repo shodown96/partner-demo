@@ -56,7 +56,7 @@ export async function POST(request: NextRequest, response: NextResponse) {
                 const name = match?.[0]
                 const clientId = match?.[1]
                 const subscribeURL = `${originURL}/subscribe-to-client?phone=+${message.from}&clientId=${clientId}`
-                console.log(message.text.body, name, clientId,)
+                console.log(message.text.body, name, clientId, subscribeURL)
                 // send a reply message as per the docs here https://developers.facebook.com/docs/whatsapp/cloud-api/reference/messages
                 await axios({
                     method: "POST",

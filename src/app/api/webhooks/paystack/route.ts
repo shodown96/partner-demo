@@ -48,6 +48,7 @@ export async function POST(req: NextRequest) {
             const data: ChargeSuccessEventData = eventData.data
             const phone = data.customer.phone.replace(" ", "").replace("+", "");
             const clientId = data.metadata.custom_fields.find(v => v.variable_name === "clientId")?.value;
+            const unsubscribeURL = `${originURL}/unsubscribe?clientId=${clientId}`;
             const TEST_PHONES = String(process.env.TEST_PHONES).split(",")
             if (TEST_PHONES.includes(phone)) {
                 await axios({
@@ -91,7 +92,7 @@ export async function POST(req: NextRequest) {
                                 name: "cta_url",
                                 parameters: {
                                     display_text: "Subscribe",
-                                    url: `${originURL}/unsubscribe?clientId=${clientId}`
+                                    url: unsubscribeURL
                                 }
                             }
                         },

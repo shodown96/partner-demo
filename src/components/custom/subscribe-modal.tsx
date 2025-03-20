@@ -64,7 +64,14 @@ function SubscribeDialog({
           firstname: values?.name.split(" ")?.[0] || "",
           lastname: values?.name.split(" ")?.[1] || "",
           amount: 5000 * 100,
-          plan: process.env.NEXT_PUBLIC_PLAN_ID
+          plan: process.env.NEXT_PUBLIC_PLAN_ID,
+          metadata: {
+            custom_fields: [{
+              display_name: "Client Id",
+              variable_name: "clientId",
+              value: clientId
+            }]
+          }
         } as any
       })
 

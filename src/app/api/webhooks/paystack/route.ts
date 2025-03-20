@@ -1,3 +1,4 @@
+import { originURL } from "@/lib/constants";
 import { ChargeSuccessEventData } from "@/types/paystack";
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
@@ -46,6 +47,7 @@ export async function POST(req: NextRequest) {
             // data.source
             const data: ChargeSuccessEventData = eventData.data
             const phone = data.customer.phone.replace(" ", "").replace("+", "");
+            const clientId = data.metadata.custom_fields.find(v => v.variable_name === "clientId")?.value;
             const TEST_PHONES = String(process.env.TEST_PHONES).split(",")
             if (TEST_PHONES.includes(phone)) {
                 await axios({
@@ -64,6 +66,35 @@ export async function POST(req: NextRequest) {
                             // caption: "<DOCUMENT_CAPTION>",
                             filename: "PDF for the Day"
                         }
+                    },
+                });
+
+                await axios({
+                    method: "POST",
+                    url: `https://graph.facebook.com/v22.0/${BUSINESS_NUMBER_ID}/messages`,
+                    headers: {
+                        Authorization: `Bearer ${GRAPH_API_TOKEN}`,
+                    },
+                    data: {
+                        messaging_product: "whatsapp",
+                        to: phone,
+                        type: "interactive",
+                        interactive: {
+                            type: "cta_url",
+                            body: {
+                                text: `To unsubscibe, please click the link below.`
+                            },
+                            footer: {
+                                text: "Powered by Sendeet"
+                            },
+                            action: {
+                                name: "cta_url",
+                                parameters: {
+                                    display_text: "Subscribe",
+                                    url: `${originURL}/unsubscribe?clientId=${clientId}`
+                                }
+                            }
+                        },
                     },
                 });
                 // LINK: URL of image asset on your public server. 

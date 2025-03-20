@@ -55,7 +55,8 @@ export async function POST(request: NextRequest, response: NextResponse) {
             if (match) {
                 const name = match?.[0]
                 const clientId = match?.[1]
-                console.log(message.text.body, name, clientId)
+                const subscribeURL = `${originURL}/subscribe-to-client?phone=+${message.from}&clientId=${clientId}`
+                console.log(message.text.body, name, clientId,)
                 // send a reply message as per the docs here https://developers.facebook.com/docs/whatsapp/cloud-api/reference/messages
                 await axios({
                     method: "POST",
@@ -70,7 +71,7 @@ export async function POST(request: NextRequest, response: NextResponse) {
                         interactive: {
                             type: "cta_url",
                             body: {
-                                text: `Hello ${name}, \n\n Thank you for messaging us, to proceed with subscribing, click the link below.`
+                                text: `Hello ${name}, \n\nThank you for messaging us, to proceed with subscribing, click the link below.`
                             },
                             footer: {
                                 text: "Powered by Sendeet"
@@ -79,7 +80,7 @@ export async function POST(request: NextRequest, response: NextResponse) {
                                 name: "cta_url",
                                 parameters: {
                                     display_text: "Subscribe",
-                                    url: `${originURL}/subscribe-to-client?phone=+${message.from}&clientId=${clientId}`
+                                    url: subscribeURL
                                 }
                             }
                         },

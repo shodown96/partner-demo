@@ -3,12 +3,12 @@ import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
 
 
-const { GRAPH_API_TOKEN, BUSINESS_NUMBER_ID, SAMPLE_PDF } = process.env;
+const { GRAPH_API_TOKEN, BUSINESS_NUMBER_ID, SAMPLE_PDF, PAYSTACK_API_SECRET_KEY } = process.env;
 
 const verifyPaystackTransaction = async (eventData: any, signature: any) => {
     // const hmac = crypto.createHmac('sha512', `${process.env.PAYSTACK_API_SECRET_KEY}`);
     // const expectedSignature = hmac.update(JSON.stringify(eventData)).digest('hex');
-    const secret = String(process.env.PAYSTACK_API_SECRET_KEY);
+    const secret = String(PAYSTACK_API_SECRET_KEY);
     const encoder = new TextEncoder();
     const key = await crypto.subtle.importKey(
         'raw',

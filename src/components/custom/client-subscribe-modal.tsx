@@ -17,7 +17,6 @@ import { Label } from "@/components/ui/label";
 import { ERROR_MESSAGES, PLACEHOLDERS } from '@/lib/constants/index';
 import { OnboardingParamsType, SubscribeParamsSchema, SubscribeParamsType } from '@/lib/validation';
 import { PaystackReference } from "@/types/paystack";
-import { useSearchParams } from 'next/navigation';
 import { useEffect } from "react";
 import toast from 'react-hot-toast';
 import { usePaystackPayment } from 'react-paystack';
@@ -34,8 +33,7 @@ function ClientSubscribeDialog({
   onboardedValues,
   setOpen
 }: ClientSubscribeDialogProps) {
-  const searchParams = useSearchParams()
-  const phoneNumber = searchParams.get("phone");
+
   const defined = typeof window !== 'undefined';
   if (!defined) {
     return null;

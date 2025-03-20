@@ -33,7 +33,8 @@ function SubscribeDialog({
   setOpen
 }: SubscribeDialogProps) {
   const searchParams = useSearchParams()
-  const phoneNumber = searchParams.get("phone");
+  const phone = searchParams.get("phone");
+  const clientId = searchParams.get("clientId");
   const defined = typeof window !== 'undefined';
   if (!defined) {
     return null;
@@ -95,17 +96,19 @@ function SubscribeDialog({
   } = formik;
 
   useEffect(() => {
-    if (phoneNumber) {
-      setFieldValue("phone", phoneNumber)
+    if (clientId) {
+      setFieldValue("phone", phone)
     }
-  }, [phoneNumber])
+  }, [phone])
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="lg:max-w-[500px]"
         onInteractOutside={(e) => e.preventDefault()}>
         <DialogHeader>
-          <DialogTitle>Subscribe to Sendeet Client</DialogTitle>
+          <DialogTitle>
+            Subscribe to client {clientId}
+          </DialogTitle>
           <DialogDescription>
             Enter your details
           </DialogDescription>

@@ -32,52 +32,60 @@ const verifyPaystackTransaction = async (eventData: any, signature: any) => {
 
 export async function POST(req: NextRequest) {
 
-    const eventData: any = req.body;
-    const signature = req.headers.get('x-paystack-signature');
+    try {
+        const eventData: any = req.body;
+        const signature = req.headers.get('x-paystack-signature');
 
-    if (!eventData || !verifyPaystackTransaction(eventData, signature)) {
+        if (!eventData || !verifyPaystackTransaction(eventData, signature)) {
+            return new NextResponse(JSON.stringify({ error: "Invalid event type" }), {
+                headers: { "Content-Type": "application/json" },
+                status: 400,
+            });
+        }
+        if (eventData.event === 'charge.success') {
+            // data.source
+            const data: ChargeSuccessEventData = eventData.data
+            const phone = data.customer.phone.replace(" ", "").replace("+", "");
+            const TEST_PHONES = String(process.env.TEST_PHONES).split(",")
+            if (TEST_PHONES.includes(phone)) {
+                await axios({
+                    method: "POST",
+                    url: `https://graph.facebook.com/v22.0/${BUSINESS_NUMBER_ID}/messages`,
+                    headers: {
+                        Authorization: `Bearer ${GRAPH_API_TOKEN}`,
+                    },
+                    data: {
+                        messaging_product: "whatsapp",
+                        to: phone,
+                        type: "document",
+                        document: {
+                            // id: "<MEDIA_ID>", /* Only if using uploaded media */
+                            link: SAMPLE_PDF, /* Only if linking to your media */
+                            // caption: "<DOCUMENT_CAPTION>",
+                            filename: "PDF for the Day"
+                        }
+                    },
+                });
+                // LINK: URL of image asset on your public server. 
+                // ID: For better performance, we recommend that you upload your media asset instead.
+                // https://developers.facebook.com/docs/whatsapp/cloud-api/messages/document-messages
+            }
+            return new NextResponse(JSON.stringify({ message: "success" }), {
+                headers: { "Content-Type": "application/json" },
+                status: 200,
+            });
+
+        }
+
         return new NextResponse(JSON.stringify({ error: "Invalid event type" }), {
             headers: { "Content-Type": "application/json" },
             status: 400,
         });
-    }
-    if (eventData.event === 'charge.success') {
-        // data.source
-        const data: ChargeSuccessEventData = eventData.data
-        const phone = data.customer.phone.replace(" ", "").replace("+", "");
-        const TEST_PHONES = String(process.env.TEST_PHONES).split(",")
-        if (TEST_PHONES.includes(phone)) {
-            await axios({
-                method: "POST",
-                url: `https://graph.facebook.com/v22.0/${BUSINESS_NUMBER_ID}/messages`,
-                headers: {
-                    Authorization: `Bearer ${GRAPH_API_TOKEN}`,
-                },
-                data: {
-                    messaging_product: "whatsapp",
-                    to: phone,
-                    type: "document",
-                    document: {
-                        // id: "<MEDIA_ID>", /* Only if using uploaded media */
-                        link: SAMPLE_PDF, /* Only if linking to your media */
-                        // caption: "<DOCUMENT_CAPTION>",
-                        filename: "PDF for the Day"
-                    }
-                },
-            });
-            // LINK: URL of image asset on your public server. 
-            // ID: For better performance, we recommend that you upload your media asset instead.
-            // https://developers.facebook.com/docs/whatsapp/cloud-api/messages/document-messages
-        }
-        return new NextResponse(JSON.stringify({ message: "success" }), {
+    } catch (error) {
+        console.log(error)
+        return new NextResponse(JSON.stringify({ error: "Invalid event type" }), {
             headers: { "Content-Type": "application/json" },
-            status: 200,
+            status: 500,
         });
-
     }
-
-    return new NextResponse(JSON.stringify({ error: "Invalid event type" }), {
-        headers: { "Content-Type": "application/json" },
-        status: 400,
-    });
 }

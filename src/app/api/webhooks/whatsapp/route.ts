@@ -53,7 +53,9 @@ export async function POST(request: NextRequest, response: NextResponse) {
             const regex = /^Hello, my name is ([A-Za-z ]+), I would love to subscribe to ([A-Za-z_]+)$/i;
             const match = message.text.body.match(regex);
             if (match) {
-                const name = match?.[0]
+                const name = String(match?.[0]).replace("is ", "").replace("Hello", "")
+
+                // const name = match?.[0]
                 const clientId = match?.[1]
                 const subscribeURL = `${originURL}/subscribe-to-client?phone=+${message.from}&clientId=${clientId}`
                 console.log(message.text.body, name, clientId, subscribeURL)

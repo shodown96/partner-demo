@@ -36,3 +36,6 @@ export async function POST(request: NextRequest, response: NextResponse) {
     }
 
 }
+
+// https://partner-demo.vercel.app/api/webhooks/gupshup
+// https://8ad5-102-88-54-147.ngrok-free.app/api/v1/webhook
